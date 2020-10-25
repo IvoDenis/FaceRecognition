@@ -2,7 +2,7 @@ import face_recognition
 import json
 import numpy as np
 import requests
-obama_image = face_recognition.load_image_file("obama.jpg")
+obama_image = face_recognition.load_image_file("biden.jpg")
 
 try:
     face_encoding = face_recognition.face_encodings(obama_image)[0]
@@ -12,16 +12,19 @@ except IndexError:
     quit()
 
 data = {
-    "name": "Obama",
+    "name": "Biden",
     "features":face_encoding.tolist(),
 }
 
+
+
 json_data=json.dumps(data)
 
-inv_data=json.loads(json_data)
 
-encoding=np.array(inv_data["features"])
 
-results = face_recognition.compare_faces(face_encoding,[encoding] )
-r = requests.put('http://localhost:5001/employers/', data = data)  
-print(r.url)
+
+r = requests.get('http://localhost:3000/employers/')  
+
+inv_data=json.loads(r.json())
+
+encoding=np.array(inv_data["features"][0])
