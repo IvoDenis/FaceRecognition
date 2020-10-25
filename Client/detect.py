@@ -1,7 +1,7 @@
 import face_recognition
 import json
 import numpy as np
-
+import requests
 obama_image = face_recognition.load_image_file("obama.jpg")
 
 try:
@@ -23,5 +23,5 @@ inv_data=json.loads(json_data)
 encoding=np.array(inv_data["features"])
 
 results = face_recognition.compare_faces(face_encoding,[encoding] )
-if results[0]==True:
-    print("Is the unknown face a picture of Obama? {}".format(inv_data["name"]))
+r = requests.put('http://localhost:5001/employers/', data = data)  
+print(r.url)
