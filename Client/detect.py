@@ -23,8 +23,17 @@ json_data=json.dumps(data)
 
 
 
-r = requests.get('http://localhost:3000/employers/')  
+r = requests.get('https://localhost:5001/employers/',verify=False)  
 
-inv_data=json.loads(r.json())
+print(r.text)
 
-encoding=np.array(inv_data["features"][0])
+glob=r.json()
+
+#inv_data=json.loads(glob[0])
+
+encoding=np.array(glob[1]["features"]).astype(np.float32)
+
+results = face_recognition.compare_faces( face_encoding, [encoding])
+print(results)
+
+
