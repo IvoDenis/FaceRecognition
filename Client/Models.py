@@ -13,18 +13,20 @@ def GetFullData(url:str):
 
 
 def DeleteData(url:str,data,name):
+    localId=None
+    Deleted=False
     for data_i in data:
         if data_i["name"]==name:
             localId=data_i["id"]
-            break
-        else:
-            print(f"{name} was not found")
-    curl = url+f"/{localId}"
-    r = requests.delete(curl)
-    if (r.status_code==200):
-        print(f"{name} was deleted")
-    else:
-        print("Feels bad man")
+            curl = url+f"/{localId}"
+            r = requests.delete(curl)
+            if (r.status_code==200):
+                print(f"{name} was deleted")
+                Deleted=True      
+    if Deleted==False:
+        print(f"{name} was not found")
+            
+
 
 
 def AddData(url:str,name,features):
@@ -32,6 +34,7 @@ def AddData(url:str,name,features):
         "name":name,
         "features":features
     }
+
     r = requests.post(url, json=data)
     if (r.status_code==200):
         print(f"{name} was added")
