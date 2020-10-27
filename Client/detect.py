@@ -21,8 +21,6 @@ data = {
 json_data=json.dumps(data)
 
 
-
-
 r = requests.get('https://localhost:5001/employers/',verify=False)  
 
 print(r.text)
