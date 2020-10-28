@@ -25,8 +25,20 @@ def DeleteData(url:str,data,name):
                 Deleted=True      
     if Deleted==False:
         print(f"{name} was not found")
+        
             
+def UpdateData(url:str,id_,newName,newFeatures):
+    newData={
+        "name":newName,
+        "features":newFeatures
+    }
 
+    curl = url+f"/{id_}"
+    r = requests.put(curl,json=newData)
+    if (r.status_code==200):
+        print(f"{id_} was updated")
+    else:
+        print(f"Update {id_} was crashed!!!")
 
 
 def AddData(url:str,name,features):
