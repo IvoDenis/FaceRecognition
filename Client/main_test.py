@@ -23,9 +23,11 @@ for filepath in jpg_filepaths:
     except IndexError:
         print("I wasn't able to locate any faces in at least one of the images. Check the image files. Aborting...")
         quit()
+    print(f"File {filepath}")
     for j in face_encodings:
         for i in (Data):
             results = face_recognition.compare_faces(j, [i["features"]])
-
+                      
             if (results[0]==True):
                 print(f'This is a  {i["name"]}')
+    print("End")
