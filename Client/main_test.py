@@ -51,12 +51,14 @@ for filepath in jpg_filepaths:
 
     except IndexError:
         print("I wasn't able to locate any faces in at least one of the images. Check the image files. Aborting...")
-        df.loc[cindex]={'filename':filepath,'result':False}
+        df.loc[cindex]={'filename':filepath,'result':0}
         cindex=cindex+1
         continue
     print(f"File {filepath}")
 
     faces=[]
+    faceCounts=len(info)
+    count=0
     for face_encoding in face_encodings:
         results = face_recognition.compare_faces(list_encodings, face_encoding)
         face_distances = face_recognition.face_distance(list_encodings,face_encoding)
@@ -64,13 +66,14 @@ for filepath in jpg_filepaths:
         if (results[best_match_index]):
             person=Data[best_match_index]["name"]
             print(f'This is {person}')
-            faces.append(person)          
-
-    faces=sorted(faces)
-    if (faces==info):
-        df.loc[cindex]={'filename':filepath,'result':True}
-    else:
-        df.loc[cindex]={'filename':filepath,'result':False}
+            for i in info:
+                if i==person:
+                    count=count+1;
+                    info.remove(person)
+            faces.append(person)    
+    count=count/faceCounts
+    df.loc[cindex]={'filename':filepath,'result':count}
+ 
     cindex=cindex+1
     print("End")
 
