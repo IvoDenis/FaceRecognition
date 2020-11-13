@@ -14,6 +14,15 @@ url="https://facerecognitiondbapi20201027214040.azurewebsites.net/employers"
 
 Data=GetFullData(url);
 
+list_encodings=[]
+
+list_names=[]
+
+for j in Data:
+    list_encodings.append(j["features"])
+    list_names.append(j["name"])
+
+
 for filepath in jpg_filepaths:
     image=face_recognition.load_image_file(filepath)
     try:
@@ -24,10 +33,11 @@ for filepath in jpg_filepaths:
         print("I wasn't able to locate any faces in at least one of the images. Check the image files. Aborting...")
         quit()
     print(f"File {filepath}")
-    for j in face_encodings:
-        for i in (Data):
-            results = face_recognition.compare_faces(j, [i["features"]])
-                      
-            if (results[0]==True):
-                print(f'This is a  {i["name"]}')
+    for face_encoding in face_encodings:
+        results = face_recognition.compare_faces(list_encodings, face_encoding)
+        face_distances = face_recognition.face_distance(list_encodings,face_encoding)
+        best_match_index=np.argmin(face_distances)
+        if (results[best_match_index]):
+            person=Data[best_match_index]["name"]
+            print(f'This is {person}')  
     print("End")
