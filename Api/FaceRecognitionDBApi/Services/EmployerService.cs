@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using FaceRecognitionDBApi.Models;
 using MongoDB.Bson;
@@ -13,26 +14,32 @@ namespace FaceRecognitionDBApi.Services
         private readonly IMongoCollection<Employer> _employers;
         public EmployerService(IEmployersDatabaseSettings settings)
         {
-            var client = new MongoClient(settings.ConnectionString);
+            MongoClientSettings mongoSettings = MongoClientSettings.FromUrl(
+                         new MongoUrl(settings.ConnectionString)
+                                                );
+            mongoSettings.SslSettings =
+              new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+            var client = new MongoClient(mongoSettings);
             var database = client.GetDatabase(settings.DatabaseName);
             _employers = database.GetCollection<Employer>(settings.EmployersCollectionName);
         }
-        public List<Employer> Get()
+        public async Task<List<Employer>> Get()
         {
-           return _employers.Find(p => true).ToList();
+            var result = await _employers.FindAsync(p => true);
+            return result.ToList();
         }
         public async Task Remove(string id)
         {
-           await _employers.DeleteOneAsync(emp => (emp.Id == id));
+            await _employers.DeleteOneAsync(emp => (emp.Id == id));
         }
         public async Task Add(Employer employer)
         {
             await _employers.InsertOneAsync(employer);
         }
-   
-        public async Task Update(Employer employer)
+
+        public async Task Update(string id, Employer employer)
         {
-            await _employers.ReplaceOneAsync(new BsonDocument("_id",new ObjectId(employer.Id)), employer);
+            await _employers.ReplaceOneAsync(emp => emp.Id == id, employer);
         }
 
 

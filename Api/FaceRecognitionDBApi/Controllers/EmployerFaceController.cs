@@ -6,7 +6,6 @@ using FaceRecognitionDBApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 
 namespace FaceRecognitionDBApi.Controllers
 {
@@ -24,9 +23,9 @@ namespace FaceRecognitionDBApi.Controllers
         // GET: /employers
         [HttpGet]
 
-        public IEnumerable<Employer> Get()
+        public async Task<IEnumerable<Employer>> Get()
         {
-            return _employerService.Get();
+            return  await _employerService.Get();
         }
 
 
@@ -40,10 +39,10 @@ namespace FaceRecognitionDBApi.Controllers
         }
 
         // PUT: employers/
-        [HttpPut]
-        public async Task Put([FromBody] Employer employer)
+        [HttpPut("{id}")]
+        public async Task Put(string id,[FromBody] Employer employer)
         {
-            await _employerService.Update(employer);
+            await _employerService.Update(id,employer);
         }
 
         // DELETE: employers/id

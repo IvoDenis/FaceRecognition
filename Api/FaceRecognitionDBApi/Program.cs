@@ -21,6 +21,7 @@ namespace FaceRecognitionDBApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                   
                 });
     }
 }
